@@ -1,27 +1,9 @@
-import jsPDF from "jspdf";
-
-// Convert TTF font to base64 for jsPDF - using Noto Sans with Hungarian support
-export async function loadHungarianFont(doc: jsPDF): Promise<void> {
-  try {
-    const fontUrl = new URL("../assets/fonts/NotoSans-Regular.ttf", import.meta.url).href;
-    const response = await fetch(fontUrl);
-    const arrayBuffer = await response.arrayBuffer();
-    
-    // Convert to base64
-    const bytes = new Uint8Array(arrayBuffer);
-    let binary = "";
-    for (let i = 0; i < bytes.byteLength; i++) {
-      binary += String.fromCharCode(bytes[i]);
-    }
-    const base64 = btoa(binary);
-    
-    // Add font to jsPDF
-    doc.addFileToVFS("NotoSans-Regular.ttf", base64);
-    doc.addFont("NotoSans-Regular.ttf", "NotoSans", "normal");
-    doc.setFont("NotoSans");
-  } catch (error) {
-    console.error("Error loading NotoSans font:", error);
-    // Fallback to Helvetica
-    doc.setFont("helvetica");
-  }
+// Helper function to replace Hungarian special characters for PDF
+// jsPDF has limited Unicode support, so we replace ő→ö and ű→ü
+export function hungarianText(text: string): string {
+  return text
+    .replace(/ő/g, "ö")
+    .replace(/Ő/g, "Ö")
+    .replace(/ű/g, "ü")
+    .replace(/Ű/g, "Ü");
 }
