@@ -3,16 +3,30 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { QuotationForm } from "./QuotationForm";
 import { QuotationSummary } from "./QuotationSummary";
+import { CustomerForm } from "./CustomerForm";
+import { MaterialSelector, MATERIAL_TYPES } from "./MaterialSelector";
 import { FileDown, Printer } from "lucide-react";
 import jsPDF from "jspdf";
 
 export default function QuotationApp() {
-  const [materialCost, setMaterialCost] = useState(120);
+  // Customer data
+  const [customerName, setCustomerName] = useState("");
+  const [customerEmail, setCustomerEmail] = useState("");
+  const [customerPhone, setCustomerPhone] = useState("");
+  const [customerAddress, setCustomerAddress] = useState("");
+
+  // Material
+  const [selectedMaterial, setSelectedMaterial] = useState("pla");
+  const [materialCost, setMaterialCost] = useState(80);
   const [machineRatePerMinute, setMachineRatePerMinute] = useState(60);
   const [grams, setGrams] = useState(0);
   const [minutes, setMinutes] = useState(0);
   const [modelingFee, setModelingFee] = useState(0);
   const [postProcess, setPostProcess] = useState(0);
+
+  const selectedMaterialData = MATERIAL_TYPES.find(
+    (m) => m.id === selectedMaterial
+  );
 
   const net =
     grams * materialCost +
@@ -43,8 +57,36 @@ export default function QuotationApp() {
     // Reset text color
     doc.setTextColor(30, 41, 59);
 
-    // Content
-    let yPos = 55;
+    // Customer info
+    let yPos = 50;
+    
+    if (customerName || customerEmail || customerPhone || customerAddress) {
+      doc.setFontSize(12);
+      doc.setFont("helvetica", "bold");
+      doc.text("Ügyfél adatok", 20, yPos);
+      yPos += 8;
+      
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(10);
+      
+      if (customerName) {
+        doc.text(`Név: ${customerName}`, 20, yPos);
+        yPos += 6;
+      }
+      if (customerEmail) {
+        doc.text(`Email: ${customerEmail}`, 20, yPos);
+        yPos += 6;
+      }
+      if (customerPhone) {
+        doc.text(`Telefon: ${customerPhone}`, 20, yPos);
+        yPos += 6;
+      }
+      if (customerAddress) {
+        doc.text(`Cím: ${customerAddress}`, 20, yPos);
+        yPos += 6;
+      }
+      yPos += 10;
+    }
     
     doc.setFontSize(12);
     doc.setFont("helvetica", "bold");
@@ -54,11 +96,11 @@ export default function QuotationApp() {
     doc.setFont("helvetica", "normal");
     doc.setFontSize(11);
 
-    // Material cost
+    // Material type and cost
     doc.setFillColor(241, 245, 249);
     doc.roundedRect(20, yPos - 5, 170, 12, 2, 2, "F");
-    doc.text(`Anyagköltség:`, 25, yPos + 3);
-    doc.text(`${grams} g × ${materialCost} Ft = ${(grams * materialCost).toLocaleString("hu-HU")} Ft`, 80, yPos + 3);
+    doc.text(`Anyag (${selectedMaterialData?.name || "Egyéni"}):`, 25, yPos + 3);
+    doc.text(`${grams} g × ${materialCost} Ft = ${(grams * materialCost).toLocaleString("hu-HU")} Ft`, 90, yPos + 3);
     yPos += 18;
 
     // Machine time
@@ -156,7 +198,24 @@ export default function QuotationApp() {
             </div>
           </CardHeader>
           
-          <CardContent className="p-6">
+          <CardContent className="p-6 space-y-6">
+            <CustomerForm
+              customerName={customerName}
+              setCustomerName={setCustomerName}
+              customerEmail={customerEmail}
+              setCustomerEmail={setCustomerEmail}
+              customerPhone={customerPhone}
+              setCustomerPhone={setCustomerPhone}
+              customerAddress={customerAddress}
+              setCustomerAddress={setCustomerAddress}
+            />
+
+            <MaterialSelector
+              selectedMaterial={selectedMaterial}
+              setSelectedMaterial={setSelectedMaterial}
+              onMaterialChange={setMaterialCost}
+            />
+
             <QuotationForm
               materialCost={materialCost}
               setMaterialCost={setMaterialCost}
