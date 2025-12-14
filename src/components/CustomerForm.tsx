@@ -1,7 +1,7 @@
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { User, Mail, Phone, MapPin } from "lucide-react";
+import { User, Mail, Phone, MapPin, Package, Hash } from "lucide-react";
 
 interface CustomerFormProps {
   customerName: string;
@@ -12,6 +12,10 @@ interface CustomerFormProps {
   setCustomerPhone: (value: string) => void;
   customerAddress: string;
   setCustomerAddress: (value: string) => void;
+  itemName: string;
+  setItemName: (value: string) => void;
+  itemQuantity: number;
+  setItemQuantity: (value: number) => void;
 }
 
 export function CustomerForm({
@@ -23,6 +27,10 @@ export function CustomerForm({
   setCustomerPhone,
   customerAddress,
   setCustomerAddress,
+  itemName,
+  setItemName,
+  itemQuantity,
+  setItemQuantity,
 }: CustomerFormProps) {
   return (
     <div className="rounded-lg border border-border bg-muted/30 p-4 transition-all hover:border-primary/30">
@@ -79,6 +87,31 @@ export function CustomerForm({
             onChange={(e) => setCustomerAddress(e.target.value)}
             placeholder="Számlázási cím"
             rows={2}
+          />
+        </div>
+        <div className="space-y-2">
+          <Label className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+            <Package className="h-3.5 w-3.5" />
+            Tárgy
+          </Label>
+          <Input
+            type="text"
+            value={itemName}
+            onChange={(e) => setItemName(e.target.value)}
+            placeholder="Nyomtatandó tárgy neve"
+          />
+        </div>
+        <div className="space-y-2">
+          <Label className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+            <Hash className="h-3.5 w-3.5" />
+            Darabszám
+          </Label>
+          <Input
+            type="number"
+            min={1}
+            value={itemQuantity}
+            onChange={(e) => setItemQuantity(parseInt(e.target.value) || 1)}
+            placeholder="1"
           />
         </div>
       </div>
