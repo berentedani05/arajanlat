@@ -1,9 +1,9 @@
 import jsPDF from "jspdf";
 
-// Convert TTF font to base64 for jsPDF
-export async function loadRobotoFont(doc: jsPDF): Promise<void> {
+// Convert TTF font to base64 for jsPDF - using Noto Sans with Hungarian support
+export async function loadHungarianFont(doc: jsPDF): Promise<void> {
   try {
-    const fontUrl = new URL("../assets/fonts/Roboto-Regular.ttf", import.meta.url).href;
+    const fontUrl = new URL("../assets/fonts/NotoSans-Regular.ttf", import.meta.url).href;
     const response = await fetch(fontUrl);
     const arrayBuffer = await response.arrayBuffer();
     
@@ -16,11 +16,11 @@ export async function loadRobotoFont(doc: jsPDF): Promise<void> {
     const base64 = btoa(binary);
     
     // Add font to jsPDF
-    doc.addFileToVFS("Roboto-Regular.ttf", base64);
-    doc.addFont("Roboto-Regular.ttf", "Roboto", "normal");
-    doc.setFont("Roboto");
+    doc.addFileToVFS("NotoSans-Regular.ttf", base64);
+    doc.addFont("NotoSans-Regular.ttf", "NotoSans", "normal");
+    doc.setFont("NotoSans");
   } catch (error) {
-    console.error("Error loading Roboto font:", error);
+    console.error("Error loading NotoSans font:", error);
     // Fallback to Helvetica
     doc.setFont("helvetica");
   }

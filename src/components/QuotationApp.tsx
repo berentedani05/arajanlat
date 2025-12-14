@@ -7,7 +7,7 @@ import { CustomerForm } from "./CustomerForm";
 import { MaterialSelector, MATERIAL_TYPES } from "./MaterialSelector";
 import { FileDown, Printer } from "lucide-react";
 import jsPDF from "jspdf";
-import { loadRobotoFont } from "@/lib/fontLoader";
+import { loadHungarianFont } from "@/lib/fontLoader";
 
 export default function QuotationApp() {
   // Customer data
@@ -40,8 +40,8 @@ export default function QuotationApp() {
   const generatePDF = async () => {
     const doc = new jsPDF();
 
-    // Load Hungarian-compatible font
-    await loadRobotoFont(doc);
+    // Load Hungarian-compatible font (Noto Sans with latin-ext)
+    await loadHungarianFont(doc);
 
     // Header
     doc.setFillColor(37, 99, 235);
@@ -49,7 +49,7 @@ export default function QuotationApp() {
     
     doc.setTextColor(255, 255, 255);
     doc.setFontSize(22);
-    doc.setFont("Roboto", "normal");
+    doc.setFont("NotoSans", "normal");
     doc.text("3D Nyomtatási Árajánlat", 20, 23);
 
     // Date
