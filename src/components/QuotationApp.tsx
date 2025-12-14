@@ -15,6 +15,8 @@ export default function QuotationApp() {
   const [customerEmail, setCustomerEmail] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
   const [customerAddress, setCustomerAddress] = useState("");
+  const [itemName, setItemName] = useState("");
+  const [itemQuantity, setItemQuantity] = useState(1);
 
   // Material
   const [selectedMaterial, setSelectedMaterial] = useState("pla");
@@ -90,6 +92,21 @@ export default function QuotationApp() {
         yPos += 6;
       }
       yPos += 10;
+    }
+
+    // Item info
+    if (itemName) {
+      doc.setFontSize(12);
+      doc.setFont("helvetica", "bold");
+      doc.text("Megrendelt tárgy", 20, yPos);
+      yPos += 8;
+      
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(10);
+      doc.text(`Tárgy: ${h(itemName)}`, 20, yPos);
+      yPos += 6;
+      doc.text(`Darabszám: ${itemQuantity} db`, 20, yPos);
+      yPos += 16;
     }
     
     doc.setFontSize(12);
@@ -212,6 +229,10 @@ export default function QuotationApp() {
               setCustomerPhone={setCustomerPhone}
               customerAddress={customerAddress}
               setCustomerAddress={setCustomerAddress}
+              itemName={itemName}
+              setItemName={setItemName}
+              itemQuantity={itemQuantity}
+              setItemQuantity={setItemQuantity}
             />
 
             <MaterialSelector
