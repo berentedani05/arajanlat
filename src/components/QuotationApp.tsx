@@ -7,7 +7,7 @@ import { CustomerForm } from "./CustomerForm";
 import { MaterialSelector, MATERIAL_TYPES } from "./MaterialSelector";
 import { FileDown, Printer } from "lucide-react";
 import jsPDF from "jspdf";
-import { loadHungarianFont } from "@/lib/fontLoader";
+import { hungarianText } from "@/lib/fontLoader";
 
 export default function QuotationApp() {
   // Customer data
@@ -37,11 +37,11 @@ export default function QuotationApp() {
   const vat = 0;
   const gross = net;
 
-  const generatePDF = async () => {
+  const generatePDF = () => {
     const doc = new jsPDF();
-
-    // Load Hungarian-compatible font (Noto Sans with latin-ext)
-    await loadHungarianFont(doc);
+    
+    // Helper for Hungarian text (ő→ö, ű→ü)
+    const h = hungarianText;
 
     // Header
     doc.setFillColor(37, 99, 235);
@@ -49,11 +49,12 @@ export default function QuotationApp() {
     
     doc.setTextColor(255, 255, 255);
     doc.setFontSize(22);
-    doc.setFont("NotoSans", "normal");
-    doc.text("3D Nyomtatási Árajánlat", 20, 23);
+    doc.setFont("helvetica", "bold");
+    doc.text(h("3D Nyomtatási Árajánlat"), 20, 23);
 
     // Date
     doc.setFontSize(10);
+    doc.setFont("helvetica", "normal");
     const today = new Date().toLocaleDateString("hu-HU");
     doc.text(`Dátum: ${today}`, 160, 23);
 
@@ -65,13 +66,15 @@ export default function QuotationApp() {
     
     if (customerName || customerEmail || customerPhone || customerAddress) {
       doc.setFontSize(12);
-      doc.text("Ügyfél adatok", 20, yPos);
+      doc.setFont("helvetica", "bold");
+      doc.text(h("Ügyfél adatok"), 20, yPos);
       yPos += 8;
       
+      doc.setFont("helvetica", "normal");
       doc.setFontSize(10);
       
       if (customerName) {
-        doc.text(`Név: ${customerName}`, 20, yPos);
+        doc.text(`Név: ${h(customerName)}`, 20, yPos);
         yPos += 6;
       }
       if (customerEmail) {
@@ -83,43 +86,45 @@ export default function QuotationApp() {
         yPos += 6;
       }
       if (customerAddress) {
-        doc.text(`Cím: ${customerAddress}`, 20, yPos);
+        doc.text(`Cím: ${h(customerAddress)}`, 20, yPos);
         yPos += 6;
       }
       yPos += 10;
     }
     
     doc.setFontSize(12);
-    doc.text("Költségbontás", 20, yPos);
+    doc.setFont("helvetica", "bold");
+    doc.text(h("Költségbontás"), 20, yPos);
     yPos += 12;
 
+    doc.setFont("helvetica", "normal");
     doc.setFontSize(11);
 
     // Material type and cost
     doc.setFillColor(241, 245, 249);
     doc.roundedRect(20, yPos - 5, 170, 12, 2, 2, "F");
-    doc.text(`Anyag (${selectedMaterialData?.name || "Egyéni"}):`, 25, yPos + 3);
+    doc.text(`Anyag (${h(selectedMaterialData?.name || "Egyéni")}):`, 25, yPos + 3);
     doc.text(`${grams} g × ${materialCost} Ft = ${(grams * materialCost).toLocaleString("hu-HU")} Ft`, 90, yPos + 3);
     yPos += 18;
 
     // Machine time
     doc.setFillColor(241, 245, 249);
     doc.roundedRect(20, yPos - 5, 170, 12, 2, 2, "F");
-    doc.text(`Gépidő:`, 25, yPos + 3);
+    doc.text(h("Gépidő:"), 25, yPos + 3);
     doc.text(`${minutes} perc × ${machineRatePerMinute} Ft = ${(minutes * machineRatePerMinute).toLocaleString("hu-HU")} Ft`, 80, yPos + 3);
     yPos += 18;
 
     // Modeling
     doc.setFillColor(241, 245, 249);
     doc.roundedRect(20, yPos - 5, 170, 12, 2, 2, "F");
-    doc.text(`3D modellezés:`, 25, yPos + 3);
+    doc.text("3D modellezés:", 25, yPos + 3);
     doc.text(`${modelingFee.toLocaleString("hu-HU")} Ft`, 80, yPos + 3);
     yPos += 18;
 
     // Post-processing
     doc.setFillColor(241, 245, 249);
     doc.roundedRect(20, yPos - 5, 170, 12, 2, 2, "F");
-    doc.text(`Utómunka:`, 25, yPos + 3);
+    doc.text("Utómunka:", 25, yPos + 3);
     doc.text(`${postProcess.toLocaleString("hu-HU")} Ft`, 80, yPos + 3);
     yPos += 25;
 
@@ -131,10 +136,12 @@ export default function QuotationApp() {
 
     // Summary
     doc.setFontSize(12);
-    doc.text("Nettó végösszeg:", 20, yPos);
+    doc.text(h("Nettó végösszeg:"), 20, yPos);
+    doc.setFont("helvetica", "bold");
     doc.text(`${net.toLocaleString("hu-HU")} Ft`, 140, yPos, { align: "right" });
     yPos += 10;
 
+    doc.setFont("helvetica", "normal");
     doc.text("ÁFA (Alanyi adómentes):", 20, yPos);
     doc.text("0 Ft", 140, yPos, { align: "right" });
     yPos += 15;
@@ -144,7 +151,8 @@ export default function QuotationApp() {
     doc.roundedRect(20, yPos - 5, 170, 18, 3, 3, "F");
     doc.setTextColor(255, 255, 255);
     doc.setFontSize(14);
-    doc.text("Fizetendő összesen:", 25, yPos + 7);
+    doc.setFont("helvetica", "bold");
+    doc.text(h("Fizetendő összesen:"), 25, yPos + 7);
     doc.text(`${gross.toLocaleString("hu-HU")} Ft`, 185, yPos + 7, { align: "right" });
 
     yPos += 35;
@@ -152,6 +160,7 @@ export default function QuotationApp() {
     // Footer note
     doc.setTextColor(100, 116, 139);
     doc.setFontSize(9);
+    doc.setFont("helvetica", "italic");
     doc.text(
       "Az árak alanyi adómentesek, az ÁFA-t nem tartalmazzák az Áfa tv. 187. § alapján.",
       20,
