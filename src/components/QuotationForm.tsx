@@ -62,16 +62,16 @@ export function QuotationForm({
             <Input
               type="number"
               step={5}
-              value={materialCost}
-              onChange={(e) => setMaterialCost(+e.target.value)}
+              value={materialCost || ""}
+              onChange={(e) => setMaterialCost(e.target.value === "" ? 0 : +e.target.value)}
               className="font-mono"
             />
           </InputGroup>
           <InputGroup icon={null} label="Felhasznált anyag (g)">
             <Input
               type="number"
-              value={grams}
-              onChange={(e) => setGrams(+e.target.value)}
+              value={grams || ""}
+              onChange={(e) => setGrams(e.target.value === "" ? 0 : +e.target.value)}
               className="font-mono"
             />
           </InputGroup>
@@ -97,8 +97,8 @@ export function QuotationForm({
             <Input
               type="number"
               step={5}
-              value={machineRatePerMinute}
-              onChange={(e) => setMachineRatePerMinute(+e.target.value)}
+              value={machineRatePerMinute || ""}
+              onChange={(e) => setMachineRatePerMinute(e.target.value === "" ? 0 : +e.target.value)}
               className="font-mono"
             />
           </InputGroup>
@@ -106,8 +106,8 @@ export function QuotationForm({
             <Input
               type="number"
               step={5}
-              value={minutes}
-              onChange={(e) => setMinutes(+e.target.value)}
+              value={minutes || ""}
+              onChange={(e) => setMinutes(e.target.value === "" ? 0 : +e.target.value)}
               className="font-mono"
             />
           </InputGroup>
@@ -132,8 +132,8 @@ export function QuotationForm({
           <Input
             type="number"
             step={500}
-            value={modelingFee}
-            onChange={(e) => setModelingFee(+e.target.value)}
+            value={modelingFee || ""}
+            onChange={(e) => setModelingFee(e.target.value === "" ? 0 : +e.target.value)}
             className="font-mono"
             placeholder="0"
           />
@@ -150,8 +150,8 @@ export function QuotationForm({
           <Input
             type="number"
             step={500}
-            value={postProcess}
-            onChange={(e) => setPostProcess(+e.target.value)}
+            value={postProcess || ""}
+            onChange={(e) => setPostProcess(e.target.value === "" ? 0 : +e.target.value)}
             className="font-mono"
             placeholder="0"
           />
