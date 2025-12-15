@@ -8,6 +8,7 @@ import { MaterialSelector, MATERIAL_TYPES } from "./MaterialSelector";
 import { FileDown, Printer } from "lucide-react";
 import jsPDF from "jspdf";
 import { hungarianText } from "@/lib/fontLoader";
+import logoImage from "@/assets/logo.png";
 
 export default function QuotationApp() {
   // Customer data
@@ -39,15 +40,37 @@ export default function QuotationApp() {
   const vat = 0;
   const gross = net;
 
-  const generatePDF = () => {
+  const generatePDF = async () => {
     const doc = new jsPDF();
     
     // Helper for Hungarian text (ő→ö, ű→ü)
     const h = hungarianText;
 
+    // Load logo as base64
+    const loadImage = (src: string): Promise<string> => {
+      return new Promise((resolve) => {
+        const img = new Image();
+        img.crossOrigin = "anonymous";
+        img.onload = () => {
+          const canvas = document.createElement("canvas");
+          canvas.width = img.width;
+          canvas.height = img.height;
+          const ctx = canvas.getContext("2d");
+          ctx?.drawImage(img, 0, 0);
+          resolve(canvas.toDataURL("image/png"));
+        };
+        img.src = src;
+      });
+    };
+
+    const logoBase64 = await loadImage(logoImage);
+
     // Header
     doc.setFillColor(37, 99, 235);
     doc.rect(0, 0, 210, 35, "F");
+    
+    // Add logo to header (right side)
+    doc.addImage(logoBase64, "PNG", 160, 5, 25, 25);
     
     doc.setTextColor(255, 255, 255);
     doc.setFontSize(22);
@@ -58,7 +81,7 @@ export default function QuotationApp() {
     doc.setFontSize(10);
     doc.setFont("helvetica", "normal");
     const today = new Date().toLocaleDateString("hu-HU");
-    doc.text(`Dátum: ${today}`, 160, 23);
+    doc.text(`Dátum: ${today}`, 130, 23);
 
     // Reset text color
     doc.setTextColor(30, 41, 59);
