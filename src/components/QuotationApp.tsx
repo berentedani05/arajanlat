@@ -18,6 +18,7 @@ export default function QuotationApp() {
   const [customerAddress, setCustomerAddress] = useState("");
   const [itemName, setItemName] = useState("");
   const [itemQuantity, setItemQuantity] = useState(1);
+  const [notes, setNotes] = useState("");
 
   // Material
   const [selectedMaterial, setSelectedMaterial] = useState("pla");
@@ -207,7 +208,21 @@ export default function QuotationApp() {
     doc.text(h("Fizetendő összesen:"), 25, yPos + 7);
     doc.text(`${gross.toLocaleString("hu-HU")} Ft`, 185, yPos + 7, { align: "right" });
 
-    yPos += 35;
+    yPos += 25;
+
+    // Notes section
+    if (notes) {
+      doc.setTextColor(30, 41, 59);
+      doc.setFontSize(11);
+      doc.setFont("helvetica", "bold");
+      doc.text("Megjegyzés:", 20, yPos);
+      yPos += 7;
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(10);
+      const splitNotes = doc.splitTextToSize(h(notes), 170);
+      doc.text(splitNotes, 20, yPos);
+      yPos += splitNotes.length * 5 + 10;
+    }
 
     // Footer note
     doc.setTextColor(100, 116, 139);
@@ -290,6 +305,20 @@ export default function QuotationApp() {
               postProcess={postProcess}
               setPostProcess={setPostProcess}
             />
+
+            {/* Notes section */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-foreground flex items-center gap-2">
+                <span className="text-lg">📝</span>
+                Megjegyzés
+              </label>
+              <textarea
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+                placeholder="Ide írhatod a megjegyzéseidet..."
+                className="w-full min-h-[80px] rounded-lg border border-input bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 resize-y"
+              />
+            </div>
 
             <div className="my-6 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
 
