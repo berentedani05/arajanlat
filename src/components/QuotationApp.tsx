@@ -226,8 +226,8 @@ export default function QuotationApp() {
     checkPageBreak(20);
     doc.setFillColor(241, 245, 249);
     doc.roundedRect(20, yPos - 5, 170, 12, 2, 2, "F");
-    doc.text(h("Gépidő:"), 25, yPos + 3);
-    doc.text(`${minutes} perc × ${machineRatePerMinute} Ft = ${(minutes * machineRatePerMinute).toLocaleString("hu-HU")} Ft`, 80, yPos + 3);
+    doc.text(h("Nyomtatási költség:"), 25, yPos + 3);
+    doc.text(`${minutes} perc × ${machineRatePerMinute} Ft = ${(minutes * machineRatePerMinute).toLocaleString("hu-HU")} Ft`, 95, yPos + 3);
     yPos += 18;
 
     // Modeling
