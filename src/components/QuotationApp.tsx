@@ -86,8 +86,20 @@ export default function QuotationApp() {
     // Reset text color
     doc.setTextColor(30, 41, 59);
 
+    // Company info
+    let yPos = 45;
+    doc.setFontSize(11);
+    doc.setFont("helvetica", "bold");
+    doc.text("Agro3DPrint", 20, yPos);
+    yPos += 5;
+    doc.setFontSize(9);
+    doc.setFont("helvetica", "normal");
+    doc.text("Berente Dániel egyéni vállalkozó", 20, yPos);
+    yPos += 5;
+    doc.text("Adószám: 91580054-1-23", 20, yPos);
+    yPos += 12;
+
     // Customer info
-    let yPos = 50;
     
     if (customerName || customerEmail || customerPhone || customerAddress) {
       doc.setFontSize(12);
