@@ -70,7 +70,7 @@ export default function QuotationApp() {
     doc.rect(0, 0, 210, 35, "F");
     
     // Add logo to header (right side)
-    doc.addImage(logoBase64, "PNG", 160, 5, 25, 25);
+    doc.addImage(logoBase64, "PNG", 165, 3, 22, 30);
     
     doc.setTextColor(255, 255, 255);
     doc.setFontSize(22);
