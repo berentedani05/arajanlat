@@ -49,9 +49,11 @@ export default function QuotationApp() {
     // Helper for Hungarian text (ő→ö, ű→ü)
     const h = hungarianText;
 
-    // Load logo as base64
-    const loadImage = (src: string): Promise<string> => {
-      return new Promise((resolve) => {
+    // Load logo as base64 + get intrinsic dimensions
+    const loadImage = (
+      src: string
+    ): Promise<{ dataUrl: string; width: number; height: number }> => {
+      return new Promise((resolve, reject) => {
         const img = new Image();
         img.crossOrigin = "anonymous";
         img.onload = () => {
@@ -60,18 +62,35 @@ export default function QuotationApp() {
           canvas.height = img.height;
           const ctx = canvas.getContext("2d");
           ctx?.drawImage(img, 0, 0);
-          resolve(canvas.toDataURL("image/png"));
+          resolve({
+            dataUrl: canvas.toDataURL("image/png"),
+            width: img.width,
+            height: img.height,
+          });
         };
+        img.onerror = () => reject(new Error("Logo betöltése sikertelen"));
         img.src = src;
       });
     };
 
-    const logoBase64 = await loadImage(logoImage);
+    const { dataUrl: logoBase64, width: logoW, height: logoH } = await loadImage(
+      logoImage
+    );
+
+    // Logo placement box (keeps aspect ratio)
+    const logoY = 45;
+    const logoMaxW = 55;
+    const logoMaxH = 70;
+    const logoScale = Math.min(logoMaxW / logoW, logoMaxH / logoH);
+    const logoPdfW = logoW * logoScale;
+    const logoPdfH = logoH * logoScale;
+    const logoX = 190 - logoPdfW; // right aligned (20mm margin)
+    const logoBottomY = logoY + logoPdfH;
 
     // Header
     doc.setFillColor(37, 99, 235);
     doc.rect(0, 0, 210, 35, "F");
-    
+
     doc.setTextColor(255, 255, 255);
     doc.setFontSize(22);
     doc.setFont("helvetica", "bold");
@@ -86,8 +105,8 @@ export default function QuotationApp() {
     // Reset text color
     doc.setTextColor(30, 41, 59);
 
-    // Add logo below header (right side, larger)
-    doc.addImage(logoBase64, "PNG", 145, 45, 50, 68);
+    // Add logo below header (right side) - auto scale to preserve aspect ratio
+    doc.addImage(logoBase64, "PNG", logoX, logoY, logoPdfW, logoPdfH);
 
     // Company info
     let yPos = 45;
@@ -146,7 +165,10 @@ export default function QuotationApp() {
       doc.text(`Darabszám: ${itemQuantity} db`, 20, yPos);
       yPos += 16;
     }
-    
+
+    // Ensure full-width sections don't overlap the logo area
+    yPos = Math.max(yPos, logoBottomY + 10);
+
     doc.setFontSize(12);
     doc.setFont("helvetica", "bold");
     doc.text(h("Költségbontás"), 20, yPos);
