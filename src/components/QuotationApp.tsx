@@ -28,6 +28,7 @@ export default function QuotationApp() {
   const [minutes, setMinutes] = useState(0);
   const [modelingFee, setModelingFee] = useState(0);
   const [postProcess, setPostProcess] = useState(0);
+  const [otherCosts, setOtherCosts] = useState(0);
 
   const selectedMaterialData = MATERIAL_TYPES.find(
     (m) => m.id === selectedMaterial
@@ -37,7 +38,8 @@ export default function QuotationApp() {
     grams * materialCost +
     minutes * machineRatePerMinute +
     modelingFee +
-    postProcess;
+    postProcess +
+    otherCosts;
   const vat = 0;
   const gross = net;
 
@@ -179,7 +181,17 @@ export default function QuotationApp() {
     doc.roundedRect(20, yPos - 5, 170, 12, 2, 2, "F");
     doc.text("Utómunka:", 25, yPos + 3);
     doc.text(`${postProcess.toLocaleString("hu-HU")} Ft`, 80, yPos + 3);
-    yPos += 25;
+    yPos += 18;
+
+    // Other costs
+    if (otherCosts > 0) {
+      doc.setFillColor(241, 245, 249);
+      doc.roundedRect(20, yPos - 5, 170, 12, 2, 2, "F");
+      doc.text(h("Egyéb felmerülő költségek:"), 25, yPos + 3);
+      doc.text(`${otherCosts.toLocaleString("hu-HU")} Ft`, 110, yPos + 3);
+      yPos += 18;
+    }
+    yPos += 7;
 
     // Separator line
     doc.setDrawColor(37, 99, 235);
@@ -305,6 +317,21 @@ export default function QuotationApp() {
               postProcess={postProcess}
               setPostProcess={setPostProcess}
             />
+
+            {/* Other costs */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-foreground flex items-center gap-2">
+                <span className="text-lg">💰</span>
+                Egyéb felmerülő költségek (Ft)
+              </label>
+              <input
+                type="number"
+                value={otherCosts || ""}
+                onChange={(e) => setOtherCosts(Number(e.target.value) || 0)}
+                placeholder="0"
+                className="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20"
+              />
+            </div>
 
             {/* Notes section */}
             <div className="space-y-2">
