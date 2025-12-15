@@ -214,36 +214,49 @@ export default function QuotationApp() {
     doc.setFont("helvetica", "normal");
     doc.setFontSize(11);
 
+    // Define consistent column position for amounts
+    const amountX = 110;
+    const separatorX = 105;
+
     // Material type and cost
     checkPageBreak(20);
     doc.setFillColor(241, 245, 249);
     doc.roundedRect(20, yPos - 5, 170, 12, 2, 2, "F");
+    doc.setDrawColor(200, 210, 220);
+    doc.setLineWidth(0.3);
+    doc.line(separatorX, yPos - 5, separatorX, yPos + 7);
     doc.text(`Anyag (${h(selectedMaterialData?.name || "Egyéni")}):`, 25, yPos + 3);
-    doc.text(`${grams} g × ${materialCost} Ft = ${(grams * materialCost).toLocaleString("hu-HU")} Ft`, 90, yPos + 3);
+    doc.text(`${grams} g × ${materialCost} Ft = ${(grams * materialCost).toLocaleString("hu-HU")} Ft`, amountX, yPos + 3);
     yPos += 18;
 
     // Machine time
     checkPageBreak(20);
     doc.setFillColor(241, 245, 249);
     doc.roundedRect(20, yPos - 5, 170, 12, 2, 2, "F");
+    doc.setDrawColor(200, 210, 220);
+    doc.line(separatorX, yPos - 5, separatorX, yPos + 7);
     doc.text(h("Nyomtatási költség:"), 25, yPos + 3);
-    doc.text(`${minutes} perc × ${machineRatePerMinute} Ft = ${(minutes * machineRatePerMinute).toLocaleString("hu-HU")} Ft`, 95, yPos + 3);
+    doc.text(`${minutes} perc × ${machineRatePerMinute} Ft = ${(minutes * machineRatePerMinute).toLocaleString("hu-HU")} Ft`, amountX, yPos + 3);
     yPos += 18;
 
     // Modeling
     checkPageBreak(20);
     doc.setFillColor(241, 245, 249);
     doc.roundedRect(20, yPos - 5, 170, 12, 2, 2, "F");
+    doc.setDrawColor(200, 210, 220);
+    doc.line(separatorX, yPos - 5, separatorX, yPos + 7);
     doc.text("3D modellezés:", 25, yPos + 3);
-    doc.text(`${modelingFee.toLocaleString("hu-HU")} Ft`, 80, yPos + 3);
+    doc.text(`${modelingFee.toLocaleString("hu-HU")} Ft`, amountX, yPos + 3);
     yPos += 18;
 
     // Post-processing
     checkPageBreak(20);
     doc.setFillColor(241, 245, 249);
     doc.roundedRect(20, yPos - 5, 170, 12, 2, 2, "F");
+    doc.setDrawColor(200, 210, 220);
+    doc.line(separatorX, yPos - 5, separatorX, yPos + 7);
     doc.text("Utómunka:", 25, yPos + 3);
-    doc.text(`${postProcess.toLocaleString("hu-HU")} Ft`, 80, yPos + 3);
+    doc.text(`${postProcess.toLocaleString("hu-HU")} Ft`, amountX, yPos + 3);
     yPos += 18;
 
     // Other costs
@@ -251,8 +264,10 @@ export default function QuotationApp() {
       checkPageBreak(20);
       doc.setFillColor(241, 245, 249);
       doc.roundedRect(20, yPos - 5, 170, 12, 2, 2, "F");
+      doc.setDrawColor(200, 210, 220);
+      doc.line(separatorX, yPos - 5, separatorX, yPos + 7);
       doc.text(h("Egyéb felmerülő költségek:"), 25, yPos + 3);
-      doc.text(`${otherCosts.toLocaleString("hu-HU")} Ft`, 110, yPos + 3);
+      doc.text(`${otherCosts.toLocaleString("hu-HU")} Ft`, amountX, yPos + 3);
       yPos += 18;
     }
     yPos += 7;
