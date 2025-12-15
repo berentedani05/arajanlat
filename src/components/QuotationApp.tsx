@@ -72,9 +72,6 @@ export default function QuotationApp() {
     doc.setFillColor(37, 99, 235);
     doc.rect(0, 0, 210, 35, "F");
     
-    // Add logo to header (right side)
-    doc.addImage(logoBase64, "PNG", 165, 3, 22, 30);
-    
     doc.setTextColor(255, 255, 255);
     doc.setFontSize(22);
     doc.setFont("helvetica", "bold");
@@ -88,6 +85,9 @@ export default function QuotationApp() {
 
     // Reset text color
     doc.setTextColor(30, 41, 59);
+
+    // Add logo below header (right side, larger)
+    doc.addImage(logoBase64, "PNG", 145, 45, 50, 68);
 
     // Company info
     let yPos = 45;
