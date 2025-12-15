@@ -15,10 +15,10 @@ export interface MaterialType {
 }
 
 export const MATERIAL_TYPES: MaterialType[] = [
-  { id: "pla", name: "PLA", pricePerGram: 80 },
-  { id: "petg", name: "PETG", pricePerGram: 100 },
-  { id: "abs", name: "ABS", pricePerGram: 90 },
-  { id: "tpu", name: "TPU (Flexibilis)", pricePerGram: 150 },
+  { id: "pla", name: "PLA", pricePerGram: 15 },
+  { id: "petg", name: "PETG", pricePerGram: 18 },
+  { id: "abs", name: "ABS", pricePerGram: 20 },
+  { id: "tpu", name: "TPU (Flexibilis)", pricePerGram: 30 },
   { id: "asa", name: "ASA", pricePerGram: 120 },
   { id: "nylon", name: "Nylon", pricePerGram: 200 },
   { id: "carbon", name: "Carbon fiber PLA", pricePerGram: 250 },
