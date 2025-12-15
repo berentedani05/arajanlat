@@ -45,9 +45,19 @@ export default function QuotationApp() {
 
   const generatePDF = async () => {
     const doc = new jsPDF();
+    const pageHeight = doc.internal.pageSize.height;
+    const marginBottom = 20;
     
     // Helper for Hungarian text (ő→ö, ű→ü)
     const h = hungarianText;
+
+    // Helper to check page break
+    const checkPageBreak = (neededSpace: number) => {
+      if (yPos + neededSpace > pageHeight - marginBottom) {
+        doc.addPage();
+        yPos = 20;
+      }
+    };
 
     // Load logo as base64 + get intrinsic dimensions
     const loadImage = (
@@ -169,6 +179,7 @@ export default function QuotationApp() {
     // Ensure full-width sections don't overlap the logo area
     yPos = Math.max(yPos, logoBottomY + 10);
 
+    checkPageBreak(20);
     doc.setFontSize(12);
     doc.setFont("helvetica", "bold");
     doc.text(h("Költségbontás"), 20, yPos);
@@ -178,6 +189,7 @@ export default function QuotationApp() {
     doc.setFontSize(11);
 
     // Material type and cost
+    checkPageBreak(20);
     doc.setFillColor(241, 245, 249);
     doc.roundedRect(20, yPos - 5, 170, 12, 2, 2, "F");
     doc.text(`Anyag (${h(selectedMaterialData?.name || "Egyéni")}):`, 25, yPos + 3);
@@ -185,6 +197,7 @@ export default function QuotationApp() {
     yPos += 18;
 
     // Machine time
+    checkPageBreak(20);
     doc.setFillColor(241, 245, 249);
     doc.roundedRect(20, yPos - 5, 170, 12, 2, 2, "F");
     doc.text(h("Gépidő:"), 25, yPos + 3);
@@ -192,6 +205,7 @@ export default function QuotationApp() {
     yPos += 18;
 
     // Modeling
+    checkPageBreak(20);
     doc.setFillColor(241, 245, 249);
     doc.roundedRect(20, yPos - 5, 170, 12, 2, 2, "F");
     doc.text("3D modellezés:", 25, yPos + 3);
@@ -199,6 +213,7 @@ export default function QuotationApp() {
     yPos += 18;
 
     // Post-processing
+    checkPageBreak(20);
     doc.setFillColor(241, 245, 249);
     doc.roundedRect(20, yPos - 5, 170, 12, 2, 2, "F");
     doc.text("Utómunka:", 25, yPos + 3);
@@ -207,6 +222,7 @@ export default function QuotationApp() {
 
     // Other costs
     if (otherCosts > 0) {
+      checkPageBreak(20);
       doc.setFillColor(241, 245, 249);
       doc.roundedRect(20, yPos - 5, 170, 12, 2, 2, "F");
       doc.text(h("Egyéb felmerülő költségek:"), 25, yPos + 3);
@@ -216,6 +232,7 @@ export default function QuotationApp() {
     yPos += 7;
 
     // Separator line
+    checkPageBreak(50);
     doc.setDrawColor(37, 99, 235);
     doc.setLineWidth(0.5);
     doc.line(20, yPos, 190, yPos);
@@ -234,6 +251,7 @@ export default function QuotationApp() {
     yPos += 15;
 
     // Total box
+    checkPageBreak(25);
     doc.setFillColor(37, 99, 235);
     doc.roundedRect(20, yPos - 5, 170, 18, 3, 3, "F");
     doc.setTextColor(255, 255, 255);
@@ -246,6 +264,10 @@ export default function QuotationApp() {
 
     // Notes section
     if (notes) {
+      const splitNotes = doc.splitTextToSize(h(notes), 170);
+      const notesHeight = splitNotes.length * 5 + 15;
+      checkPageBreak(notesHeight);
+      
       doc.setTextColor(30, 41, 59);
       doc.setFontSize(11);
       doc.setFont("helvetica", "bold");
@@ -253,12 +275,12 @@ export default function QuotationApp() {
       yPos += 7;
       doc.setFont("helvetica", "normal");
       doc.setFontSize(10);
-      const splitNotes = doc.splitTextToSize(h(notes), 170);
       doc.text(splitNotes, 20, yPos);
       yPos += splitNotes.length * 5 + 10;
     }
 
     // Footer note
+    checkPageBreak(15);
     doc.setTextColor(100, 116, 139);
     doc.setFontSize(9);
     doc.setFont("helvetica", "italic");
