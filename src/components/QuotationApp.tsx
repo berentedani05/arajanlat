@@ -9,6 +9,7 @@ import { FileDown, Printer } from "lucide-react";
 import jsPDF from "jspdf";
 import { hungarianText } from "@/lib/fontLoader";
 import logoImage from "@/assets/logo.png";
+import QRCode from "qrcode";
 
 export default function QuotationApp() {
   // Customer data
@@ -87,6 +88,16 @@ export default function QuotationApp() {
       logoImage
     );
 
+    // Generate QR code
+    const qrCodeDataUrl = await QRCode.toDataURL("https://agro3dprint.com", {
+      width: 200,
+      margin: 1,
+      color: {
+        dark: "#1e293b",
+        light: "#ffffff",
+      },
+    });
+
     // Logo placement box (keeps aspect ratio)
     const logoY = 45;
     const logoMaxW = 55;
@@ -96,6 +107,11 @@ export default function QuotationApp() {
     const logoPdfH = logoH * logoScale;
     const logoX = 190 - logoPdfW; // right aligned (20mm margin)
     const logoBottomY = logoY + logoPdfH;
+
+    // QR code placement (next to logo, on the left side of logo)
+    const qrSize = 25;
+    const qrX = logoX - qrSize - 5;
+    const qrY = logoY;
 
     // Header
     doc.setFillColor(37, 99, 235);
@@ -117,6 +133,16 @@ export default function QuotationApp() {
 
     // Add logo below header (right side) - auto scale to preserve aspect ratio
     doc.addImage(logoBase64, "PNG", logoX, logoY, logoPdfW, logoPdfH);
+
+    // Add QR code next to logo
+    doc.addImage(qrCodeDataUrl, "PNG", qrX, qrY, qrSize, qrSize);
+    
+    // Add URL text below QR code
+    doc.setFontSize(7);
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(100, 116, 139);
+    doc.text("agro3dprint.com", qrX + qrSize / 2, qrY + qrSize + 4, { align: "center" });
+    doc.setTextColor(30, 41, 59);
 
     // Company info
     let yPos = 45;
